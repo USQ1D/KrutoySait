@@ -1,1 +1,298 @@
+<!DOCTYPE html>
+<html>
+<body>
 
+</body>
+</html>
+
+<script>
+
+
+var canvas = document.createElement('canvas');
+var c = canvas.getContext("2d");
+
+canvas.width = window.innerWidth - 10;
+canvas.height = window.innerHeight -20;
+
+document.body.appendChild(canvas);
+
+var gravity = 0.5;
+
+var igrok1pic = new Image;
+igrok1pic.src="Игрок1.png";
+
+var igrok2pic = new Image;
+igrok2pic.src="Игрок2.png";
+
+var atakapic = new Image;
+atakapic.src="атака.png";
+
+var glazpic = new Image()
+glazpic.src = "глаз.png"
+
+var nebopic = new Image()
+nebopic.src = "ударснеба.png"
+
+var effect = new Image()
+effect.src = "бум.png"
+
+var bumpic = new Image()
+bumpic.src = "удар.png"
+
+var kladpic = new Image()
+kladpic.src = "кладбище.png"
+
+function rand(max) {
+  return Math.floor(Math.random() * max);
+}
+
+class Sprite{
+    constructor({position, velocity, offset, kulak}){
+        this.position = position;
+        this.velocity = velocity;
+        this.height = 100;
+        this.width = 80;
+        this.offset = offset;
+        this.kulak = kulak;
+        this.atBox = 
+        {   
+            position: this.position,
+            width:275, height:50
+        }
+        this.isat = false;  
+        this.isat1 = false;   
+        }
+       
+    
+    draw(){
+        //c.fillStyle="green";
+        //c.fillRect(this.position.x, this.position.y, this.width, this.height);
+        c.drawImage(igrok1pic, this.position.x, this.position.y, this.width, this.height);
+        //c.drawImage(igrok2pic, this.position.x + 400, this.position.y + 100, this.width, this.height);
+        this.position.y += this.velocity.y;
+        this.position.x += this.velocity.x;
+        
+        if (rand(150) === 3){
+             hp2 +=100
+             console.log("Здоровье игрока2 = ",hp2)
+         }
+         if (rand(50) === 1){
+             hp2 +=35
+             console.log("Здоровье игрока2 = ",hp2)
+         }
+         if (rand(100) === 7){
+             hp2 +=57
+             console.log("Здоровье игрока2 = ",hp2)
+         }
+
+        if (this.isat1 ==true){
+        
+        c.drawImage(nebopic, this.position.x - 100, this.position.y - 200, this.width + 200, this.height + 200);
+        c.drawImage(effect, this.position.x - 80, this.position.y - 115, this.width + 150, this.height + 150)
+        hp2 -= 170
+        }
+        
+        if (this.isat ==true){
+        //c.fillStyle="pink"
+        c.drawImage(atakapic, this.position.x + 30, this.position.y + 20, this.width + 200, this.height + 20);
+        
+        //c.fillRect(
+        //    this.atBox.position.x + 200 + this.offset,
+        //    this.atBox.position.y + 10, 
+        //    this.atBox.width + 300,
+        //    this.atBox.height + 30
+        //)
+        } 
+    }
+
+
+    update(){
+        this.draw()
+        if ((this.position.y + this.height) >= canvas.height)
+        {
+            this.velocity.y = 0;
+            gravity = 0.5
+        } else {this.velocity.y += gravity};
+        if (this.position.y <= canvas.height/4)
+        {
+            this.position.y += 20;
+        }
+    }
+    atc(){
+        this.isat = true
+        setTimeout(() =>{this.isat = false},200)
+    }
+    atc1(){
+        this.isat1 = true
+        setTimeout(() =>{this.isat1 = false},100)
+    }
+}
+
+const player = new Sprite(
+    {
+        position:{x:0,y:0},
+        velocity:{x:0,y:0},
+        offset: 10
+    }
+)
+
+const enemy = new Sprite(
+    {
+        position:{x:400,y:100},
+        velocity:{x:0,y:0},
+        offset:-10
+    }
+)
+
+var hp1 = 1000;
+var hp2 = 6888;//prompt('Введите здоровье игрока2');
+
+function drawhp() {
+    c.fillStyle = "green"
+    c.fillRect(player.position.x,player.position.y -30,hp1,20)
+    c.fillStyle ="red"
+    c.fillRect(1000 ,20,hp2,20)
+
+
+    if (hp1 < 1 || hp2 < 1){
+        if(hp1 < 1) {
+        c.drawImage(300,300,kladpic,20)
+        }
+        clearInterval(igra);
+        alert('Конец')
+    }
+}
+
+document.addEventListener('keydown',({keyCode}) =>{
+    switch (keyCode){
+        case 69:
+        console.log('удар с неба')
+        enemy.atc1()
+        break;
+
+        case 82:
+        console.log('Тюрьма')
+        enemy.velocity.x = 0
+        enemy.velocity.y = 0
+        gravity = 0
+        break;
+
+        case 32:
+        console.log('удар')
+        player.atc()
+        break;
+
+        case 68:
+        player.velocity.x = 5;
+        
+        break;
+        case 65:
+        player.velocity.x = -5;
+        
+        break;
+        case 87:
+        player.velocity.y = -20;
+        gravity +=4;
+        break;
+
+        case 83:
+        player.velocity.y = 10;
+        break;
+//враг
+        case 39:
+        enemy.velocity.x = 5;
+        break;
+
+        case 40:
+        console.log('Вражеский удар');
+        enemy.atc()
+        
+        break;
+        case 37:
+        enemy.velocity.x = -5;
+        break;
+
+        case 38:
+        enemy.velocity.y = -20;
+        gravity +=4;
+        break;
+        
+    }});
+document.addEventListener('keyup',({keyCode}) =>{
+    switch (keyCode){
+        case 82:
+        //хз что писать, вроде работает и ладно
+        break;
+        case 68:
+        player.velocity.x = 0;
+        break;
+        case 65:
+        player.velocity.x = 0;
+        break;
+        case 87:
+        player.velocity.y = 0;
+        break;
+        case 0:
+        player.velocity.y = 0;
+        break;
+
+        case 39:
+        enemy.velocity.x = 0;
+        break;
+        case 37:
+        enemy.velocity.x = 0;
+        break;
+        case 38:
+        enemy.velocity.y = 0;
+        break;
+        case 40:
+        enemy.velocity.y = 0;
+        break;
+    }});
+
+
+
+function touch() {
+    if (
+    (player.atBox.position.x + player.offset + player.atBox.width >= enemy.position.x) &&
+    (player.atBox.position.x + player.offset <= enemy.position.x + enemy.width) &&
+    (player.atBox.position.y + player.atBox.height >= enemy.position.y) &&
+    (player.atBox.position.y <= enemy.position.y + enemy.height && player.isat)// 
+    )
+    {console.log("Игрок 1 совершил удар")
+    //c.drawImage(bumpic, player.atBox.position.x + 270, player.atBox.position.y + 20, player.atBox.height + 10, player.atBox.width - 200)
+    c.drawImage(bumpic, enemy.position.x-20, enemy.position.y, enemy.width, enemy.height)
+    hp2 -= rand(10)
+    }
+
+}
+
+function touch2() {
+    if (
+    (enemy.atBox.position.x + enemy.offset + enemy.atBox.width >= player.position.x) &&
+    (enemy.atBox.position.x + enemy.offset <= player.position.x + enemy.width) &&
+    (enemy.atBox.position.y + enemy.atBox.height >= player.position.y) &&
+    (enemy.atBox.position.y <= player.position.y + player.height && enemy.isat)// 
+    )
+    {console.log("Игрок 2 совершил удар")
+    c.drawImage(bumpic, player.position.x-20, player.position.y, player.width, player.height)
+    hp1-= rand(10)
+    }
+    
+
+}
+
+function game() {
+    c.fillStyle = "black";
+    c.fillRect(0,0,canvas.width,canvas.height);
+    player.update();
+    enemy.update();
+    touch()
+    touch2()
+    drawhp()
+
+}
+
+igra = setInterval(game, 20)
+
+</script>
