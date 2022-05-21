@@ -18,36 +18,41 @@ document.body.appendChild(canvas);
 
 var gravity = 0.5;
 
-var igrok1pic = new Image;
+var igrok1pic = new Image();
 igrok1pic.src="Игрок1.png";
 
-var igrok2pic = new Image;
+var igrok2pic = new Image();
 igrok2pic.src="Игрок2.png";
 
-var atakapic = new Image;
-atakapic.src="атака.png";
+var ataka1pic = new Image();
+ataka1pic.src="атака1.png";
 
-var glazpic = new Image()
-glazpic.src = "глаз.png"
+var ataka2pic = new Image();
+ataka2pic.src="атака2.png";
 
-var nebopic = new Image()
-nebopic.src = "ударснеба.png"
+var glazpic = new Image();
+glazpic.src = "глаз.png";
 
-var effect = new Image()
-effect.src = "бум.png"
+var nebopic = new Image();
+nebopic.src = "ударснеба.png";
 
-var bumpic = new Image()
-bumpic.src = "удар.png"
+var effect = new Image();
+effect.src = "бум.png";
 
-var kladpic = new Image()
-kladpic.src = "кладбище.png"
+var bumpic = new Image();
+bumpic.src = "удар.png";
+
+var kladpic = new Image();
+kladpic.src = "кладбище.png";
 
 function rand(max) {
   return Math.floor(Math.random() * max);
 }
 
 class Sprite{
-    constructor({position, velocity, offset, kulak}){
+    constructor({kart,ataka, position, velocity, offset, kulak}){
+        this.kart = kart;
+        this.ataka = ataka;
         this.position = position;
         this.velocity = velocity;
         this.height = 100;
@@ -60,14 +65,15 @@ class Sprite{
             width:275, height:50
         }
         this.isat = false;  
-        this.isat1 = false;   
+        this.isat1 = false;  
+        this.isat666 = false;  
         }
        
     
     draw(){
         //c.fillStyle="green";
         //c.fillRect(this.position.x, this.position.y, this.width, this.height);
-        c.drawImage(igrok1pic, this.position.x, this.position.y, this.width, this.height);
+        c.drawImage(this.kart, this.position.x, this.position.y, this.width, this.height);
         //c.drawImage(igrok2pic, this.position.x + 400, this.position.y + 100, this.width, this.height);
         this.position.y += this.velocity.y;
         this.position.x += this.velocity.x;
@@ -90,11 +96,18 @@ class Sprite{
         c.drawImage(nebopic, this.position.x - 100, this.position.y - 200, this.width + 200, this.height + 200);
         c.drawImage(effect, this.position.x - 80, this.position.y - 115, this.width + 150, this.height + 150)
         hp2 -= 170
+        console.log("Здоровье игрока2 = ",hp2)
         }
-        
+
+        if (this.isat666 ==true){
+    
+        hp2 -= 666000000000000000000
+        console.log("Здоровье игрока2 = ",hp2)
+        }
+
         if (this.isat ==true){
         //c.fillStyle="pink"
-        c.drawImage(atakapic, this.position.x + 30, this.position.y + 20, this.width + 200, this.height + 20);
+        c.drawImage(this.ataka, this.position.x + this.offset, this.position.y +0, this.width + 200, this.height + 20);
         
         //c.fillRect(
         //    this.atBox.position.x + 200 + this.offset,
@@ -126,10 +139,16 @@ class Sprite{
         this.isat1 = true
         setTimeout(() =>{this.isat1 = false},100)
     }
+    atc666(){
+        this.isat666 = true
+        setTimeout(() =>{this.isat1 = false},100)
+    }
 }
 
 const player = new Sprite(
     {
+        kart:igrok1pic,
+        ataka:ataka1pic,
         position:{x:0,y:0},
         velocity:{x:0,y:0},
         offset: 10
@@ -138,28 +157,33 @@ const player = new Sprite(
 
 const enemy = new Sprite(
     {
+        kart:igrok2pic,
+        ataka:ataka2pic,
         position:{x:400,y:100},
         velocity:{x:0,y:0},
-        offset:-10
+        offset:-200
     }
 )
 
-var hp1 = 1000;
-var hp2 = 6888;//prompt('Введите здоровье игрока2');
+var hp1 = 100;
+var hp2 = 10000;//prompt('Введите здоровье игрока2');
 
 function drawhp() {
     c.fillStyle = "green"
-    c.fillRect(player.position.x,player.position.y -30,hp1,20)
+    //c.fillRect(player.position.x,player.position.y -30,hp1,20)
+    c.fillRect(30,20,hp1,20)
     c.fillStyle ="red"
     c.fillRect(1000 ,20,hp2,20)
 
-
-    if (hp1 < 1 || hp2 < 1){
-        if(hp1 < 1) {
-        c.drawImage(300,300,kladpic,20)
-        }
+    if (hp1 < 1){
+        alert('Игрок1 проиграл!')
         clearInterval(igra);
-        alert('Конец')
+        
+    }
+    if (hp2 < 1){
+        alert('Игрок2 проиграл!')
+        clearInterval(igra);
+        
     }
 }
 
@@ -180,6 +204,11 @@ document.addEventListener('keydown',({keyCode}) =>{
         case 32:
         console.log('удар')
         player.atc()
+        break;
+
+        case 80:
+        console.log('смерть')
+        enemy.atc666()
         break;
 
         case 68:
@@ -276,7 +305,7 @@ function touch2() {
     )
     {console.log("Игрок 2 совершил удар")
     c.drawImage(bumpic, player.position.x-20, player.position.y, player.width, player.height)
-    hp1-= rand(10)
+    hp1-= rand(30)
     }
     
 
@@ -290,6 +319,10 @@ function game() {
     touch()
     touch2()
     drawhp()
+    c.fillStyle = "black";
+    c.font = "20px serif";
+    c.fillText(hp1.toString(), 30, 35);
+    c.fillText(hp2.toString(), 1000, 35);
 
 }
 
