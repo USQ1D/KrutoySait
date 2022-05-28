@@ -30,7 +30,7 @@ ataka1pic.src="атака1.png";
 var ataka2pic = new Image();
 ataka2pic.src="атака2.png";
 
-var glazpic = new Image();
+var glazpic = new Image();                                  //Добавляем картинки объектов
 glazpic.src = "глаз.png";
 
 var nebopic = new Image();
@@ -74,17 +74,17 @@ class Sprite{
         //c.fillStyle="green";
         //c.fillRect(this.position.x, this.position.y, this.width, this.height);
         c.drawImage(this.kart, this.position.x, this.position.y, this.width, this.height);
-        //c.drawImage(igrok2pic, this.position.x + 400, this.position.y + 100, this.width, this.height);
+        //c.drawImage(igrok2pic, this.position.x + 400, this.position.y + 100, this.width, this.height);     //Отрисовываю объекты
         this.position.y += this.velocity.y;
         this.position.x += this.velocity.x;
         
         if (rand(150) === 3){
              hp2 +=100
-             console.log("Здоровье игрока2 = ",hp2)
+             console.log("Здоровье игрока2 = ",hp2)                 
          }
          if (rand(50) === 1){
              hp2 +=35
-             console.log("Здоровье игрока2 = ",hp2)
+             console.log("Здоровье игрока2 = ",hp2)              //Помощь 2 игроку (добавление доп. здоровья)
          }
          if (rand(100) === 7){
              hp2 +=57
@@ -96,13 +96,13 @@ class Sprite{
         c.drawImage(nebopic, this.position.x - 100, this.position.y - 200, this.width + 200, this.height + 200);
         c.drawImage(effect, this.position.x - 80, this.position.y - 115, this.width + 150, this.height + 150)
         hp2 -= 170
-        console.log("Здоровье игрока2 = ",hp2)
+        console.log("Здоровье игрока2 = ",hp2)                      //Атака
         }
 
         if (this.isat666 ==true){
     
         hp2 -= 666000000000000000000
-        console.log("Здоровье игрока2 = ",hp2)
+        console.log("Здоровье игрока2 = ",hp2)                       //Атака
         }
 
         if (this.isat ==true){
@@ -126,7 +126,7 @@ class Sprite{
             this.velocity.y = 0;
             gravity = 0.5
         } else {this.velocity.y += gravity};
-        if (this.position.y <= canvas.height/4)
+        if (this.position.y <= canvas.height/4)                              //гравитация при прыжках
         {
             this.position.y += 20;
         }
@@ -137,7 +137,7 @@ class Sprite{
     }
     atc1(){
         this.isat1 = true
-        setTimeout(() =>{this.isat1 = false},100)
+        setTimeout(() =>{this.isat1 = false},100)                      
     }
     atc666(){
         this.isat666 = true
@@ -149,7 +149,7 @@ const player = new Sprite(
     {
         kart:igrok1pic,
         ataka:ataka1pic,
-        position:{x:0,y:0},
+        position:{x:0,y:0},                             //создание игрока 1
         velocity:{x:0,y:0},
         offset: 10
     }
@@ -159,7 +159,7 @@ const enemy = new Sprite(
     {
         kart:igrok2pic,
         ataka:ataka2pic,
-        position:{x:400,y:100},
+        position:{x:400,y:100},                             //создание игрока 2
         velocity:{x:0,y:0},
         offset:-200
     }
@@ -173,7 +173,7 @@ function drawhp() {
     //c.fillRect(player.position.x,player.position.y -30,hp1,20)
     c.fillRect(30,20,hp1,20)
     c.fillStyle ="red"
-    c.fillRect(1000 ,20,hp2,20)
+    c.fillRect(1000 ,20,hp2,20)                                            //создание здоровья и проигрыша
 
     if (hp1 < 1){
         alert('Игрок1 проиграл!')
@@ -202,7 +202,7 @@ document.addEventListener('keydown',({keyCode}) =>{
         break;
 
         case 32:
-        console.log('удар')
+        console.log('удар')                                 //Создание кнопок движения и атак
         player.atc()
         break;
 
@@ -286,7 +286,7 @@ function touch() {
     (player.atBox.position.x + player.offset + player.atBox.width >= enemy.position.x) &&
     (player.atBox.position.x + player.offset <= enemy.position.x + enemy.width) &&
     (player.atBox.position.y + player.atBox.height >= enemy.position.y) &&
-    (player.atBox.position.y <= enemy.position.y + enemy.height && player.isat)// 
+    (player.atBox.position.y <= enemy.position.y + enemy.height && player.isat)//           //Функция удара игрока 1
     )
     {console.log("Игрок 1 совершил удар")
     //c.drawImage(bumpic, player.atBox.position.x + 270, player.atBox.position.y + 20, player.atBox.height + 10, player.atBox.width - 200)
@@ -301,7 +301,7 @@ function touch2() {
     (enemy.atBox.position.x + enemy.offset + enemy.atBox.width >= player.position.x) &&
     (enemy.atBox.position.x + enemy.offset <= player.position.x + enemy.width) &&
     (enemy.atBox.position.y + enemy.atBox.height >= player.position.y) &&
-    (enemy.atBox.position.y <= player.position.y + player.height && enemy.isat)// 
+    (enemy.atBox.position.y <= player.position.y + player.height && enemy.isat)//                 //Функция удара игрока 2
     )
     {console.log("Игрок 2 совершил удар")
     c.drawImage(bumpic, player.position.x-20, player.position.y, player.width, player.height)
@@ -320,7 +320,7 @@ function game() {
     touch2()
     drawhp()
     c.fillStyle = "black";
-    c.font = "20px serif";
+    c.font = "20px serif";                                                  //функция запускающая игра
     c.fillText(hp1.toString(), 30, 35);
     c.fillText(hp2.toString(), 1000, 35);
 
